@@ -1,64 +1,176 @@
 <style>
     .body{
-  background-color: #000080;
+    background-color: #003738;
 }
-
+.gaming{
+	width: 50%;
+	height: 100%;
+	background-color:#015f60;
+	position:relative;
+	margin: auto;
+}
 .grid-container{ 
   display: grid;
-  grid-template-columns: 25% 25%;
+  grid-template-columns: 50% 50%;
   justify-content:center;
   grid-gap: 10px;
   padding: 10px;
+  background-color:	#FF00FF;
 }
 .grid-container2{ 
   display: grid;
-  grid-template-columns: 50%;
+  grid-template-columns: 100%;
   justify-content: space-evenly;
   grid-gap: 10px;
   padding: 10px;
+  position:relative;
+  top:50px;
 }
 .grid-container > div {
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: #e2fefe;
   text-align: center;
   padding: 10px 0;
-  font-size: 30px;
+  font-size:40px;
+  border-radius:25px;
+  font-family: "Marker Felt",fantasy, serif;
+  
+  
 }
 .grid-container2 > div {
-  background-color: rgba(255, 255, 255, 0.8);
   text-align: center;
   padding: 10px 0;
   font-size: 30px;
+  color:#001f20;
+  background-color:	#ee82ee;
+  font-family:"Apple Chancery", cursive;
+  width:50%;
+  height:40px;
+  margin:auto;
+  border-radius:20px;
 }
 
 .question{
-  background-color: rgba(255, 255, 255, 0.8);
-  width: 46%; 
+  width: 88%; 
   text-align: center;
   position: relative;
-  font-size: 30px;
-  height: 20px;
+  font-size: 70px;
+  height: 100px;
+  top:20px;
   margin: auto;
-  padding:25px;
+  padding:10px;
+  color:rgb(50,50,50);
+  background-color: #03eef1;
+  border-radius: 25px;
+  font-family: "Marker Felt",fantasy, serif;
 }
-@media screen and (max-width: 500px) {
-  .question,
-  .grid-container2 > div,
-  .grid-container > div,
-  .grid-container2,
-  .grid-container,
-  .body,{width:70%;
-  }
+
+
+.gameOver{
+	
+  position:fixed;
+  top:20%;	
+  left:10%;
+  width:80%;
+  height:30%;
+  background-color:rgb(225,225,225);
+  display:none;	
+  text-align: center;
+ }
+
+
+@media only screen and (min-width:400px) {
+
+ .w1{
+	
+   width: 100%; 	
+   
+ }
+
+
 }
+
+@media only screen and (min-width:800px) {
+
+ .w2{
+	
+   width: 50%; 	
+   
+	 
+ }
+
+
+}
+
 </style>
 
 
 <script>
 
-var english = new Array("boy","girl","man","woman","house","school","bible","brother","sister"); 
-var french = new Array("garcon","fille","homme","femme","maison","ecole","bible","frere","seaur"); 
 
 
-function loadQuestion(){
+
+var englishT = new Array("to be","to have","to do","to say","to go","to get","to make","to know","to think","to take","to see","to come","to want","to look","to use","to find","to give","to tell","to work","to call","to try"); 
+var frenchT = new Array("etre","pour avoir","a faire","dire","aller","obtenir","faire","a savoir","penser","prendre","voir","venir","vouloir","regarder","utiliser","trouver","donner","dire","travailler","appeler","essayer");
+
+var english=[];
+var french=[];
+
+
+setQuestionArrary();
+
+//game states
+var questionNo=0;
+var game_start=0;
+var game_duration=englishT.length*9;
+var game_score=0;
+var game_time=0;
+var myInterval;
+var answerOption="";
+
+var quesPosition=0;
+
+var clickState=0;  //0 means that an option is yet to be clicked. //1 an option as been click.
+
+var delaytime=4;
+
+
+
+
+
+
+
+
+function setQuestionArrary(){
+	
+	    var x = english.length;
+		var y = englishT.length;
+		
+	 if(x>y){	
+	   english.slice(0, y-1);
+	   french.slice(0, y-1);
+	 }else{
+		 
+		 
+	 }
+ 
+		for (var i of englishT) {
+			english.push(i);
+		}	  
+ 
+		for (var i of frenchT) {
+			french.push(i);
+		}
+	 	
+	
+}
+
+
+function loadQuestion(){	
+	
+	questionNo=english.length;
+	
+	clickState=0;
+	delaytime=4;
 	
 	document.getElementById("option1").style.visibility = 'visible';
 	document.getElementById("option2").style.visibility = 'visible';
@@ -67,14 +179,41 @@ function loadQuestion(){
 	document.getElementById("option5").style.visibility = 'visible';
 	document.getElementById("option6").style.visibility = 'visible';
 	
-	var x1=0+Math.floor(Math.random() * 9); 
+	document.getElementById("option1").style.backgroundColor = '#ee82ee';
+	document.getElementById("option2").style.backgroundColor = '#ee82ee';
+	document.getElementById("option3").style.backgroundColor = '#ee82ee';
+	document.getElementById("option4").style.backgroundColor = '#ee82ee';
+	document.getElementById("option5").style.backgroundColor = '#ee82ee';
+	document.getElementById("option6").style.backgroundColor = '#ee82ee';
 	
-	var y1=0+Math.floor(Math.random() * 9); 
-	var y2=0+Math.floor(Math.random() * 9); 
-	var y3=0+Math.floor(Math.random() * 9); 
-	var y4=0+Math.floor(Math.random() * 9); 
-	var y5=0+Math.floor(Math.random() * 9); 
-	var y6=0+Math.floor(Math.random() * 9); 
+		
+	
+	
+	//var x1=0+Math.floor(Math.random() * questionNo); 
+	
+	var x1=quesPosition;
+	
+	quesPosition=quesPosition+1;
+	
+	if(quesPosition > (questionNo-1)){quesPosition=0;}
+	
+	
+	
+	var y1=0+Math.floor(Math.random() * questionNo); 
+	var y2=0+Math.floor(Math.random() * questionNo); 
+	var y3=0+Math.floor(Math.random() * questionNo); 
+	var y4=0+Math.floor(Math.random() * questionNo); 
+	var y5=0+Math.floor(Math.random() * questionNo); 
+	var y6=0+Math.floor(Math.random() * questionNo); 
+	
+	/*
+	y1=getOptions(x1, questionNo);
+	y2=getOptions(x1, questionNo);
+	y3=getOptions(x1, questionNo);
+	y4=getOptions(x1, questionNo);
+	y5=getOptions(x1, questionNo);
+	y6=getOptions(x1, questionNo);
+	*/
 	
 	
     //initialize questions and options.	
@@ -91,6 +230,8 @@ function loadQuestion(){
 	//set the correct answer
 	var z1=1+Math.floor(Math.random() * 6); 
 	document.getElementById("option"+z1).innerHTML=french[x1];
+	answerOption="option"+z1;
+	
 	
 	
 }
@@ -98,20 +239,296 @@ function loadQuestion(){
 
 function checkAnswer(x){
 	
+	if(clickState==1){return;}
+	
+	var question=document.getElementById("question").innerHTML;	
+	
+	var index = english.indexOf(question);	
+	
+	
+	var translateWord=french[index];
+	
+	
+	
+	//start timing
+	timeCount();
+	
 	var optionText=document.getElementById(x).innerHTML;
-	var index = french.indexOf(optionText);
-	var translateWord=english[index];
 	
-	var question=document.getElementById("question").innerHTML;
-	
-	if(question==translateWord){
+	if(optionText==translateWord){
 		
 		//document.getElementById("question").innerHTML="Correct";
-		loadQuestion();
+		
+		game_score=game_score+1;
 		
 	}else{
-		document.getElementById(x).style.visibility = 'hidden';
+		//document.getElementById(x).style.visibility = 'hidden';
+		
+		game_score=game_score-1;
+		adjustQuestion(index);
+		
 	}
+	
+	//indicate correct option with color
+	document.getElementById(x).style.backgroundColor="pink"; 
+	document.getElementById(answerOption).style.backgroundColor="RGB(20,200,20)"; 
+	
+	
+	clickState=1;
+	
+	
+	 
+	 
+}
+
+function adjustQuestion(questionIndex){
+	
+	//get Question length from question array
+	 var oldLength = english.length;
+	 var newLength = oldLength+2;
+
+    //end if questionIndex is close to end of world.
+     if(questionIndex>(questionNo-3)){return;}	
+	 
+	 
+	 var oldenglish= [];
+ 
+		for (var i of english) {
+			oldenglish.push(i);
+		}
+
+	  	var oldfrench= [];
+ 
+		for (var i of french) {
+			oldfrench.push(i);
+		}
+
+	 
+	 
+	
+	 var k=0; //old index
+	for(var i=0; i<newLength; i++){
+	
+		
+		if(i==quesPosition || i==(quesPosition+4)){
+		
+        }else{	
+		
+		   english[i]=oldenglish[k]; 
+		   french[i]=oldfrench[k];
+			
+		   k=k+1;
+	    }
+	
+		
+			
+	}
+	
+	
+	
+	    english[quesPosition]=oldenglish[questionIndex];
+		english[quesPosition+4]=english[questionIndex];
+		
+		
+		french[quesPosition]=oldfrench[questionIndex];
+		french[quesPosition+4]=french[questionIndex];
+		
+		
+	
+}
+
+
+function getOptions(questionIndex, questionNo){
+	
+	//black all options
+	for(var i=0; i<6; i++){
+	  document.getElementById("option"+(i+1)).innerHTML="xxx";
+	}
+	
+	var opt1=document.getElementById("option1").innerHTML;
+	var opt2=document.getElementById("option2").innerHTML;
+	var opt3=document.getElementById("option3").innerHTML;
+	var opt4=document.getElementById("option4").innerHTML;
+	var opt5=document.getElementById("option5").innerHTML;
+	var opt6=document.getElementById("option6").innerHTML;
+	
+	
+	var y=0; var status=0;
+	
+	for(var i=0; i<50; i++){
+		
+	    y=0+Math.floor(Math.random() * questionNo);
+
+
+
+        if(french[y]==opt1 || french[y]==opt2 || french[y]==opt3 || french[y]==opt4 || french[y]==opt5 || french[y]==opt6 || y==questionIndex){
+			status=0;
+		}else{
+			status=1;
+		}
+		
+		
+		
+		if(status==1){ return y;}
+	   
+	}
+	
+	
+	return y;
+	
+
+
+}
+
+
+
+function colorAnswer(x){
+	
+	var y=document.getElementById(answerOption).innerHTML;
+	
+	if(document.getElementById("option1").innerHTML==y);
+	 document.getElementById("option1").style.backgroundColor="RGB(20,200,20)"; 
+	if(document.getElementById("option2").innerHTML==y);
+	 document.getElementById("option2").style.backgroundColor="RGB(20,200,20)"; 
+	if(document.getElementById("option3").innerHTML==y);
+	 document.getElementById("option3").style.backgroundColor="RGB(20,200,20)"; 
+	if(document.getElementById("option4").innerHTML==y);
+	 document.getElementById("option4").style.backgroundColor="RGB(20,200,20)"; 
+	if(document.getElementById("option5").innerHTML==y);
+	 document.getElementById("option5").style.backgroundColor="RGB(20,200,20)"; 
+	if(document.getElementById("option6").innerHTML==y);
+	 document.getElementById("option6").style.backgroundColor="RGB(20,200,20)"; 
+	
+	
+	
+}
+
+function timeCount(){	  
+  
+   if(game_start==0){
+	   
+	   game_start=1;
+	   
+	   myInterval=setInterval(function(){ 
+	   
+		  game_time=game_time+1;
+		  
+		  gameEnd();
+		
+		  document.getElementById("game_time").innerHTML=game_time;
+		  document.getElementById("game_score").innerHTML=game_score;
+		  
+		  
+		  if(clickState==1){
+			  delaytime=delaytime-1;
+		  }
+		  
+		  		  
+		  if(delaytime==0){
+			  
+			  loadQuestion();
+		  }
+		  
+		  
+	   
+	   }, 1000);
+
+	}
+}
+
+
+/*
+function getDateTime(){
+	
+	var today = new Date();
+	
+    var date = today.getFullYear()+''+(today.getMonth()+1)+''+today.getDate()+''+today.getHours()+''+today.getMinutes()+''+today.getSeconds();
+	
+    document.getElementById("game_score").innerHTML=date;
+	
+    var datex = today.getFullYear()+''+(today.getMonth()+1)+''+today.getDate()+''+today.getHours()+''+today.getMinutes()+''+(today.getSeconds()+20);
+	
+    document.getElementById("game_time").innerHTML=datex;	
+	
+}
+
+function AddSeconds(){	
+	
+	
+	var today = new Date();
+	
+	var s=today.getSeconds()+20;
+	var m=today.getSeconds()+20;
+	var h=today.getSeconds()+20;
+	var d=today.getSeconds()+20;
+	var m=today.getSeconds()+20;
+	var y=today.getSeconds()+20;
+	
+	
+	
+	if(s>59){m=m+1; s=s-59;}
+	
+	if(m>59){h=h+1; m=m-59;}
+	
+	if(h>24){d=d+1; h=h-24;}
+	
+	if(h>24){d=d+1; h=h-24;}
+	
+    if(d>30){m=m+1; d=d-20;}
+	
+	 if(m>12){y=y+1; m=m-12;}
+	 
+	  var date=y+''+m+''+m+''+m+''+m+''+m+''+m+'';
+	
+}
+
+*/
+
+
+function gameEnd(){
+	
+	if(game_time>=game_duration){
+		
+		
+		document.getElementById("question").style.visibility = 'hidden';
+		document.getElementById("option1").style.visibility = 'hidden';
+		document.getElementById("option2").style.visibility = 'hidden';
+		document.getElementById("option3").style.visibility = 'hidden';
+		document.getElementById("option4").style.visibility = 'hidden';
+		document.getElementById("option5").style.visibility = 'hidden';
+		document.getElementById("option6").style.visibility = 'hidden';
+		
+		document.getElementById("gameOver").style.display ='block';
+		
+		clearInterval(myInterval);
+	}
+	
+}
+
+function startGame(){
+	
+	setQuestionArrary();
+	
+	loadQuestion();
+	
+	document.getElementById("question").style.visibility = 'visible';
+	document.getElementById("option1").style.visibility = 'visible';
+	document.getElementById("option2").style.visibility = 'visible';
+	document.getElementById("option3").style.visibility = 'visible';
+	document.getElementById("option4").style.visibility = 'visible';
+	document.getElementById("option5").style.visibility = 'visible';
+	document.getElementById("option6").style.visibility = 'visible';
+	
+	document.getElementById("gameOver").style.display ='none';
+	
+	game_start=0;
+	game_time=0;
+	game_score=0;
+	
+	document.getElementById("game_time").innerHTML=game_time;
+	document.getElementById("game_score").innerHTML=game_score;
+	
+		
 	
 }
 
@@ -122,20 +539,25 @@ function checkAnswer(x){
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
  
    <body class="body" onload=loadQuestion()>
-  <div class="grid-container">
-   <div id="btn1">score <br>34</div>
-   <div id="btn2">score <br>50</div>
+  <div class="gaming">
+	<div class="grid-container">
+	<div id="btn1">score <br><span id=game_score>0</span></div>
+	<div id="btn2">Time <br><span id=game_time>0</span></div>
+	</div>
+	<div class="question w1 w2" id="question">
+	Sunday
+	</div>
+	<div class="grid-container2" id="options">   
+	<div id="option1" onclick="checkAnswer('option1')">Today</div>
+	<div id="option2" onclick="checkAnswer('option2')">Friday</div>
+	<div id="option3" onclick="checkAnswer('option3')">Sunday</div>
+	<div id="option4" onclick="checkAnswer('option4')">Monday</div>
+	<div id="option5" onclick="checkAnswer('option5')">Tuesday</div>
+	<div id="option6" onclick="checkAnswer('option6')">Friday</div>
+	</div>
   </div>
-  <div class="question" id="question">
-   Sunday
-  </div>
-  <div class="grid-container2">
-   <div id="option1" onclick="checkAnswer('option1')">Today</div>
-   <div id="option2" onclick="checkAnswer('option2')">Friday</div>
-   <div id="option3" onclick="checkAnswer('option3')">Sunday</div>
-   <div id="option4" onclick="checkAnswer('option4')">Monday</div>
-   <div id="option5" onclick="checkAnswer('option5')">Tuesday</div>
-   <div id="option6" onclick="checkAnswer('option6')">Friday</div>
-  </div>
-  </body>
+  
+  <div class="gameOver" id="gameOver"><span style="Color:blue">Game over</span><br/><button onclick=startGame()>Start New Game</button></div>
+  
+  <div style="text-align: right;position: fixed;z-index:9999999;bottom: 0;width: auto;right: 1%;cursor: pointer;line-height: 0;display:block !important;"><a title="Hosted on free web hosting 000webhost.com. Host your own website for FREE." target="_blank" href="https://www.000webhost.com/?utm_source=000webhostapp&utm_campaign=000_logo&utm_medium=website&utm_content=footer_img"><img src="https://cdn.000webhost.com/000webhost/logo/footer-powered-by-000webhost-white2.png" alt="www.000webhost.com"></a></div><script>function getCookie(t){for(var e=t+"=",n=decodeURIComponent(document.cookie).split(";"),o=0;o<n.length;o++){for(var i=n[o];" "==i.charAt(0);)i=i.substring(1);if(0==i.indexOf(e))return i.substring(e.length,i.length)}return""}getCookie("hostinger")&&(document.cookie="hostinger=;expires=Thu, 01 Jan 1970 00:00:01 GMT;",location.reload());var wordpressAdminBody=document.getElementsByClassName("wp-admin")[0],notification=document.getElementsByClassName("notice notice-success is-dismissible"),hostingerLogo=document.getElementsByClassName("hlogo"),mainContent=document.getElementsByClassName("notice_content")[0];if(null!=wordpressAdminBody&&notification.length>0&&null!=mainContent){var googleFont=document.createElement("link");googleFontHref=document.createAttribute("href"),googleFontRel=document.createAttribute("rel"),googleFontHref.value="https://fonts.googleapis.com/css?family=Roboto:300,400,600,700",googleFontRel.value="stylesheet",googleFont.setAttributeNode(googleFontHref),googleFont.setAttributeNode(googleFontRel);var css="@media only screen and (max-width: 576px) {#main_content {max-width: 320px !important;} #main_content h1 {font-size: 30px !important;} #main_content h2 {font-size: 40px !important; margin: 20px 0 !important;} #main_content p {font-size: 14px !important;} #main_content .content-wrapper {text-align: center !important;}} @media only screen and (max-width: 781px) {#main_content {margin: auto; justify-content: center; max-width: 445px;}} @media only screen and (max-width: 1325px) {.web-hosting-90-off-image-wrapper {position: absolute; max-width: 95% !important;} .notice_content {justify-content: center;} .web-hosting-90-off-image {opacity: 0.3;}} @media only screen and (min-width: 769px) {.notice_content {justify-content: space-between;} #main_content {margin-left: 5%; max-width: 445px;} .web-hosting-90-off-image-wrapper {position: absolute; display: flex; justify-content: center; width: 100%; }} .web-hosting-90-off-image {max-width: 90%;} .content-wrapper {min-height: 454px; display: flex; flex-direction: column; justify-content: center; z-index: 5} .notice_content {display: flex; align-items: center;} * {-webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;} .upgrade_button_red_sale{box-shadow: 0 2px 4px 0 rgba(255, 69, 70, 0.2); max-width: 350px; border: 0; border-radius: 3px; background-color: #ff4546 !important; padding: 15px 55px !important; font-family: 'Roboto', sans-serif; font-size: 16px; font-weight: 600; color: #ffffff;} .upgrade_button_red_sale:hover{color: #ffffff !important; background: #d10303 !important;}",style=document.createElement("style"),sheet=window.document.styleSheets[0];style.styleSheet?style.styleSheet.cssText=css:style.appendChild(document.createTextNode(css)),document.getElementsByTagName("head")[0].appendChild(style),document.getElementsByTagName("head")[0].appendChild(googleFont);var button=document.getElementsByClassName("upgrade_button_red")[0],link=button.parentElement;link.setAttribute("href","https://www.hostinger.com/hosting-starter-offer?utm_source=000webhost&utm_medium=panel&utm_campaign=000-wp"),link.innerHTML='<button class="upgrade_button_red_sale">Go for it</button>',(notification=notification[0]).setAttribute("style","padding-bottom: 0; padding-top: 5px; background-color: #040713; background-size: cover; background-repeat: no-repeat; color: #ffffff; border-left-color: #040713;"),notification.className="notice notice-error is-dismissible";var mainContentHolder=document.getElementById("main_content");mainContentHolder.setAttribute("style","padding: 0;"),hostingerLogo[0].remove();var h1Tag=notification.getElementsByTagName("H1")[0];h1Tag.className="000-h1",h1Tag.innerHTML="Black Friday Prices",h1Tag.setAttribute("style",'color: white; font-family: "Roboto", sans-serif; font-size: 22px; font-weight: 700; text-transform: uppercase;');var h2Tag=document.createElement("H2");h2Tag.innerHTML="Get 90% Off!",h2Tag.setAttribute("style",'color: white; margin: 10px 0 15px 0; font-family: "Roboto", sans-serif; font-size: 60px; font-weight: 700; line-height: 1;'),h1Tag.parentNode.insertBefore(h2Tag,h1Tag.nextSibling);var paragraph=notification.getElementsByTagName("p")[0];paragraph.innerHTML="Get Web Hosting for $0.99/month + SSL Certificate for FREE!",paragraph.setAttribute("style",'font-family: "Roboto", sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 15px;');var list=notification.getElementsByTagName("UL")[0];list.remove();var org_html=mainContent.innerHTML,new_html='<div class="content-wrapper">'+mainContent.innerHTML+'</div><div class="web-hosting-90-off-image-wrapper"><img class="web-hosting-90-off-image" src="https://cdn.000webhost.com/000webhost/promotions/bf-2020-wp-inject-img.png"></div>';mainContent.innerHTML=new_html;var saleImage=mainContent.getElementsByClassName("web-hosting-90-off-image")[0]}</script></body>
  </main>
